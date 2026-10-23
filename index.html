@@ -12,7 +12,7 @@
 :root{
   --bg:#EEF1F7; --surface:#FFFFFF; --surface-2:#E3E8F1; --ink:#0F1729; --ink-2:#596379; --line:#D5DCE8;
   --navy:#16233F; --navy-ink:#F3F6FC; --navy-2:#A9B6D3;
-  --hi:#FFD43B; --hi-ink:#16233F; --marker:rgba(255,212,59,.55);
+  --hi:#FFD43B; --hi-ink:#16233F; --marker:rgba(255,212,59,.55); --memo-bg:#FFFBE8; --memo-line:#ECE2BC; --memo-margin:rgba(210,63,55,.38); --memo-rule:#E2D49A;
   --ok:#14965F; --ok-ink:#FFFFFF; --danger:#D23F37;
   --a-setuk:#3563E9; --a-jayul:#12976F; --a-dongari:#E2640F; --a-jinro:#7C4DEB; --a-haengteuk:#D4386A; --a-etc:#66738C; --a-common:#B7791F;
   --display:"Black Han Sans","IBM Plex Sans KR",system-ui,sans-serif;
@@ -24,7 +24,7 @@
   :root:not([data-theme="light"]){
     color-scheme:dark;
     --bg:#0B101B; --surface:#151C2B; --surface-2:#1F2739; --ink:#EDF1F8; --ink-2:#9AA5BB; --line:#283149;
-    --navy:#1B2A4C; --navy-ink:#F3F6FC; --navy-2:#9FB0D6; --marker:rgba(255,212,59,.26);
+    --navy:#1B2A4C; --navy-ink:#F3F6FC; --navy-2:#9FB0D6; --marker:rgba(255,212,59,.26); --memo-bg:#1F1D15; --memo-line:#36321F; --memo-margin:rgba(240,106,96,.38); --memo-rule:#4A4429;
     --ok:#33BE85; --ok-ink:#06140E; --danger:#F06A60;
     --a-setuk:#7196FF; --a-jayul:#38C39B; --a-dongari:#FF9450; --a-jinro:#A687FF; --a-haengteuk:#FF6F9B; --a-etc:#97A2B8; --a-common:#E3A63D;
   }
@@ -32,7 +32,7 @@
 :root[data-theme="dark"]{
   color-scheme:dark;
   --bg:#0B101B; --surface:#151C2B; --surface-2:#1F2739; --ink:#EDF1F8; --ink-2:#9AA5BB; --line:#283149;
-  --navy:#1B2A4C; --navy-ink:#F3F6FC; --navy-2:#9FB0D6; --marker:rgba(255,212,59,.26);
+  --navy:#1B2A4C; --navy-ink:#F3F6FC; --navy-2:#9FB0D6; --marker:rgba(255,212,59,.26); --memo-bg:#1F1D15; --memo-line:#36321F; --memo-margin:rgba(240,106,96,.38); --memo-rule:#4A4429;
   --ok:#33BE85; --ok-ink:#06140E; --danger:#F06A60;
   --a-setuk:#7196FF; --a-jayul:#38C39B; --a-dongari:#FF9450; --a-jinro:#A687FF; --a-haengteuk:#FF6F9B; --a-etc:#97A2B8; --a-common:#E3A63D;
 }
@@ -206,6 +206,48 @@ textarea.field{resize:vertical;line-height:1.7}
 .sug{border-top:1px solid var(--line);padding-top:10px}
 .sug-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 .sug-item{display:grid;gap:4px;padding-left:12px;border-left:3px solid var(--hi)}
+.badge.sug-p{font-size:11px;padding:1px 7px;vertical-align:2px;margin-right:2px;display:inline-block}
+body[data-s="para"] .app{max-width:1200px}
+.pwrap{display:grid;gap:18px}
+.pmain{display:grid;gap:18px;min-width:0;align-content:start}
+.pmemo{position:sticky;top:calc(env(safe-area-inset-top,0px) + 56px);z-index:4;display:flex;flex-direction:column;max-height:40vh;background:var(--memo-bg);border:1px solid var(--memo-line);border-radius:4px 4px 16px 4px;box-shadow:0 10px 22px -14px rgba(0,0,0,.5);overflow:hidden}
+.pmemo.min .pquote{max-height:3.9em}
+.pmemo-head{display:flex;align-items:center;gap:8px;padding:10px 14px 8px 46px;border-bottom:2px solid var(--memo-rule);font-size:13px;color:var(--ink-2);flex:none}
+.pmemo-head b{color:var(--ink);font-size:14px;white-space:nowrap}
+.pmemo-head .meta-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pmemo-head .link{margin-left:auto;white-space:nowrap}
+.pquote{margin:0;border:0;border-radius:0;box-shadow:none;flex:1 1 auto;min-height:0;overflow:auto;padding:2px 16px 14px 46px;font:15px/1.9em var(--serif);color:var(--danger);word-break:keep-all;overflow-wrap:anywhere;background-color:transparent;background-image:linear-gradient(to right,transparent 34px,var(--memo-margin) 34px,var(--memo-margin) 36px,transparent 36px),repeating-linear-gradient(to bottom,transparent 0,transparent calc(1.9em - 1px),var(--memo-line) calc(1.9em - 1px),var(--memo-line) 1.9em);background-attachment:local}
+.pquote .ps{color:var(--danger)}
+.pquote sup{color:var(--danger);opacity:.7}
+.pmemo-foot{margin:0;padding:6px 14px 8px 46px;font-size:12px;color:var(--ink-2);border-top:1px dashed var(--memo-line);flex:none}
+@media (min-width:720px){
+  .pwrap{grid-template-columns:minmax(260px,42%) minmax(0,1fr);align-items:start}
+  .pmemo{top:calc(env(safe-area-inset-top,0px) + 64px);max-height:calc(100vh - 84px)}
+  .pmemo .pq-min{display:none}
+  .pmemo.min .pquote{max-height:none}
+}
+.ps.cur{outline:2px solid var(--navy);outline-offset:1px;border-radius:3px}
+.ps sup{font:600 11px var(--mono);color:var(--ink-2);margin-right:3px}
+.ps.has{font-weight:600}
+mark.hm{background:#FFE14D;color:#8A120B;border-radius:2px;padding:0 1px;cursor:pointer}
+.hl-hint{margin-top:-8px;font-size:13px}
+.hlbtn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:30;background:#FFE14D;color:#111;border:0;border-radius:999px;padding:12px 22px;font-weight:800;font-size:15px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.hlbtn[hidden]{display:none}
+.pblock{display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--line);padding-top:14px}
+.pb-head{margin:0;font-size:14px;color:var(--ink-2);word-break:keep-all;overflow-wrap:anywhere}
+.pnum{display:inline-block;min-width:20px;font:600 12px var(--mono);margin-right:6px;color:var(--ink)}
+.pq{display:flex;flex-direction:column;gap:8px}
+.pq-q{margin:0;font-weight:700;word-break:keep-all;overflow-wrap:anywhere}
+.pq-n{font:500 13px var(--mono);color:var(--ink-2);margin-right:8px}
+.pq-done{font-size:12px;font-weight:600;color:var(--ok-ink)}
+.pblock.pmainq{border-top:0;padding:14px;border:2px solid var(--ok);border-radius:16px}
+.pq-role{font-size:11px;padding:1px 8px;vertical-align:2px}
+.pq-role.tail{display:inline-block;border:1px solid var(--line);border-radius:999px;color:var(--ink-2);font-weight:600}
+.ptails{display:grid;gap:10px;padding-left:14px;border-left:3px solid var(--line)}
+.ptail{display:grid;gap:6px}
+.ptail-q{margin:0;font-weight:600;font-size:14px;word-break:keep-all;overflow-wrap:anywhere}
+.ptail .tail-a{min-height:72px}
+.pa-ai{display:flex;flex-direction:column;gap:8px}
 .sug-q{margin:0;font-weight:700;word-break:keep-all;overflow-wrap:anywhere}
 .sug-why{margin:0;font-size:13px;color:var(--ink-2);word-break:keep-all}
 .sug-add{justify-self:start;padding:7px 12px!important;font-size:13px!important}
@@ -231,7 +273,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36);
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
-const TITLES={home:"홈",add:"문장 추가",browse:"내 생기부",sentence:"문장",question:"질문",psetup:"연습 설정",practice:"연습"};
+const TITLES={home:"홈",add:"문장 추가",browse:"내 생기부",sentence:"문장",question:"질문",psetup:"연습 설정",practice:"연습",plist:"답변 쓰기",para:"문단 답변"};
 
 let db=null,loaded=false,connecting=true,items=new Map(),banner="";
 const latestQs=new Map(),queues=new Map(),ansTimers=new Map();
@@ -252,11 +294,11 @@ function aiCtx(it,qs){
   return `[생기부 문장]\n${GL(it.grade)} · ${AREA_KO(it.area)}${it.subject?" · "+it.subject:""}\n"${it.sentence}"\n\n[이 문장에 학생이 써 둔 질문]\n${qs.length?qs.map((q,i)=>`Q${i+1}. ${q.q}`).join("\n"):"(없음)"}`;
 }
 function aiPrompt(kind,it,qs,q){
-  if(kind==="s")return `${RULES}\n\n${BANK_TXT}\n\n${aiCtx(it,qs)}\n\n[할 일] 이 문장에 대한 질문 세트를 심사위원 입장에서 검사해. 짧게.\n\n출력 형식: 먼저 [결과]만 3줄 이내로 쓰고, 다음 줄에 정확히 ===해설=== 한 줄을 쓴 뒤, 그 아래에 나머지를 순서대로 써.\n[결과] "판정: 충분/질문 부족/다시 짜기" 중 하나 + 한 줄 이유 (충분=가장 위험한 단어를 짚는 질문이 있음, 질문 부족=그 질문이 빠짐, 다시 짜기=대부분 문장과 상관없거나 겹침) 한 줄 + "넣을 질문: ○○" 또는 "고칠 질문: Q번호 → 이유 한 마디" 한 줄 (둘 다 필요 없으면 "그대로 좋음")\n[해설]\n문장 종류: 활동 문장/평가 문장 + 필요한 질문 수\n가장 위험한 단어: 하나, 왜 위험한지 한 줄\n판정 이유: 그 위험한 단어를 학생 질문이 짚었는지\n고칠 질문: 두 개를 한 번에 묻거나 문장과 상관없는 질문만 번호로 (없으면 \"없음\")\n빠진 질문: 위험한 단어를 짚는 질문이 없을 때만 1개. 기출을 본떴으면 본뜬 기출을 짧게, 아니면 (지어낸 질문)\n학과 연결 질문이 섞여 있으면: 번호와 \"추가 질문으로 따로\" 한 줄 (없으면 이 줄 생략)\n\n마지막에 정확히 ===추천=== 한 줄을 쓰고, 그 아래에 이 문장에 더 넣을 만한 질문 1~3개를 JSON 배열로만 써. 기출 질문 은행에서 닮은 모양을 본떠 이 문장에 맞게 쓰고, 학생 질문과 겹치지 않게, 가장 위험한 단어를 짚는 것부터. 판정이 충분이어도 다음으로 위험한 단어를 짚는 질문 1개는 준다. 학과 연결 질문은 넣지 않는다.\n형식: [{\"q\":\"추천 질문\",\"why\":\"무엇을 확인하려는 질문인지 한 마디\",\"src\":\"본뜬 기출 몇 마디와 [연도 학과 · 전형] 또는 공식 기출, 없으면 지어낸 질문\"}]`;
-  if(kind==="q")return `${RULES}\n\n${BANK_TXT}\n\n${aiCtx(it,qs)}\n\n[검사할 질문]\n${q.q}\n\n[할 일] 이 질문이 실제 면접에서 이 문장을 보고 나올 만한 질문인지 심사위원 입장에서 검사해. 짧게.\n\n출력 형식: 먼저 [결과]만 3줄 이내로 쓰고, 다음 줄에 정확히 ===해설=== 한 줄을 쓴 뒤, 그 아래에 나머지를 순서대로 써.\n[결과] "판정: 실전형/보완 필요/빗나감" 중 하나 + 한 줄 이유 (실전형=이 문장을 보고 실제로 나올 질문이고 위험한 단어를 짚음, 보완 필요=나올 수는 있지만 핵심을 비껴가거나 두 가지를 한 번에 물음, 빗나감=문장 내용과 상관없거나 학과 연결 질문) 한 줄 + "다듬은 질문: ○○" 한 줄 (그대로 좋으면 "다듬은 질문: 그대로")\n[해설]\n가장 위험한 단어: 이 문장에서 하나\n판정 이유: 한 줄 (질문이 짧은 것은 장점이다)\n렌즈: 검증/개념/이유/연결 중 무엇인지\n기출 근거: 위 기출 목록에서 닮은 모양 하나 (없으면 "기출에 닮은 모양 없음")\n고칠 점: 표현, 길이, 두 개를 한 번에 묻는지, 오타\n다듬은 질문: 한 줄 (그대로 좋으면 "그대로")\n이어질 꼬리질문 1~2개`;
+  if(kind==="s")return `${RULES}\n\n${BANK_TXT}\n\n${aiCtx(it,qs)}\n\n[할 일] 이 문장에 대한 질문 세트를 심사위원 입장에서 검사해. 짧게.\n\n출력 형식: 먼저 [결과]만 3줄 이내로 쓰고, 다음 줄에 정확히 ===해설=== 한 줄을 쓴 뒤, 그 아래에 나머지를 순서대로 써.\n[결과] "판정: 충분/질문 부족/다시 짜기" 중 하나 + 한 줄 이유 (충분=가장 위험한 단어를 짚는 질문이 있음, 질문 부족=그 질문이 빠짐, 다시 짜기=대부분 문장과 상관없거나 겹침) 한 줄 + "넣을 질문: ○○" 또는 "고칠 질문: Q번호 → 이유 한 마디" 한 줄 (둘 다 필요 없으면 "그대로 좋음")\n[해설]\n문장 종류: 활동 문장/평가 문장 + 필요한 질문 수\n가장 위험한 단어: 하나, 왜 위험한지 한 줄\n판정 이유: 그 위험한 단어를 학생 질문이 짚었는지\n고칠 질문: 두 개를 한 번에 묻거나 문장과 상관없는 질문만 번호로 (없으면 \"없음\")\n빠진 질문: 위험한 단어를 짚는 질문이 없을 때만 1개. 기출을 본떴으면 본뜬 기출을 짧게, 아니면 (지어낸 질문)\n학과 연결 질문이 섞여 있으면: 번호와 한 줄 (학과와 먼 문장이면 \"실전 질문 (바로 나올 수 있음)\", 가까운 문장이면 \"추가 질문으로 따로\"; 없으면 이 줄 생략)\n\n마지막에 정확히 ===추천=== 한 줄을 쓰고, 그 아래에 이 문장에 더 넣을 만한 질문 1~3개를 JSON 배열로만 써. 기출 질문 은행에서 닮은 모양을 본떠 이 문장에 맞게 쓰고, 학생 질문과 겹치지 않게, 가장 위험한 단어를 짚는 것부터. 판정이 충분이어도 다음으로 위험한 단어를 짚는 질문 1개는 준다. 학과 연결 질문은 학과와 먼 문장일 때 1개까지 넣는다(바로 나올 수 있는 질문). 학생 질문에 압박 질문이 없고 이 문장에 학생의 판단·선택·주장·방법이 있으면 압박 질문 1개를 마지막에 넣고 \"p\":true로 표시한다(평가 문장이면 넣지 않는다).\n형식: [{\"q\":\"추천 질문\",\"why\":\"무엇을 확인하려는 질문인지 한 마디\",\"src\":\"본뜬 기출 몇 마디와 [연도 학과 · 전형] 또는 공식 기출, 없으면 지어낸 질문\",\"p\":false}]`;
+  if(kind==="q")return `${RULES}\n\n${BANK_TXT}\n\n${aiCtx(it,qs)}\n\n[검사할 질문]\n${q.q}\n\n[할 일] 이 질문이 실제 면접에서 이 문장을 보고 나올 만한 질문인지 심사위원 입장에서 검사해. 짧게.\n\n출력 형식: 먼저 [결과]만 3줄 이내로 쓰고, 다음 줄에 정확히 ===해설=== 한 줄을 쓴 뒤, 그 아래에 나머지를 순서대로 써.\n[결과] "판정: 실전형/보완 필요/빗나감" 중 하나 + 한 줄 이유 (실전형=이 문장을 보고 실제로 나올 질문이고 위험한 단어를 짚음, 보완 필요=나올 수는 있지만 핵심을 비껴가거나 두 가지를 한 번에 물음, 빗나감=문장 내용과 상관없음. 학과와 먼 문장에서 묻는 학과 연결 질문은 빗나감이 아니라 실전형으로 본다) 한 줄 + "다듬은 질문: ○○" 한 줄 (그대로 좋으면 "다듬은 질문: 그대로")\n[해설]\n가장 위험한 단어: 이 문장에서 하나\n판정 이유: 한 줄 (질문이 짧은 것은 장점이다)\n렌즈: 검증/개념/이유/연결/압박 중 무엇인지 (압박이면 반례·한계/정당성/선택 이유/일관성 중 어느 유형인지)\n기출 근거: 위 기출 목록에서 닮은 모양 하나 (없으면 "기출에 닮은 모양 없음")\n고칠 점: 표현, 길이, 두 개를 한 번에 묻는지, 오타\n다듬은 질문: 한 줄 (그대로 좋으면 "그대로")\n이어질 꼬리질문 1~2개`;
   const n=(q.a||"").replace(/\s/g,"").length,sec=Math.round(n/5);
   const tails=(q.tails||[]).filter(t=>t.q&&t.q.trim());
-  return `${RULES}\n\n${BANK_TXT}\n\n${aiCtx(it,qs)}\n\n[질문]\n${q.q}\n\n[학생 답변] (공백 뺀 ${n}자, 말하면 약 ${sec}초로 추정)\n${q.a}\n${tails.length?"\n[꼬리질문과 답]\n"+tails.map((t,k)=>`꼬리${k+1}. ${t.q}\n답: ${t.a||"(없음)"}`).join("\n"):""}\n\n[할 일] 이 답변을 면접 답변 기준으로 채점해.\n\n출력 형식: 먼저 [결과]만 3줄 이내로 쓰고, 다음 줄에 정확히 ===해설=== 한 줄을 쓴 뒤, 그 아래에 나머지를 순서대로 써.\n[결과] "판정: 바로 연습/한 곳 수정/다시 쓰기" 중 하나 + 한 줄 이유 (바로 연습=3원칙이 갖춰져 소리 내어 연습하면 됨, 한 곳 수정=한 곳만 고치면 됨, 다시 쓰기=첫 문장이 결론이 아니거나 질문에 안 맞거나 위험 표현이 있음) 한 줄 + "3원칙: 두괄 O·△·X / 구체 O·△·X / 성찰 O·△·X" 한 줄 + "가장 먼저 고칠 것: ○○" 한 줄\n[해설]\n판정 이유: 한 줄\n질문 종류와 맞는 틀: 판단/경험/개념 중 무엇이고 그 틀을 따랐는지\n3원칙: 두괄성 / 구체성 / 성찰성 각각 O·△·X와 짧은 이유\n길이: 30초~1분에 맞는지\n위험 표현: 블라인드 위반, 생기부에 없는 말, 설명 못 할 용어, 누구나 하는 말, 성적 숫자 (없으면 "없음")\n고칠 곳 1~2개: 어디를 어떻게 (완성 문장 말고 방향과 짧은 구절)\n예상 꼬리질문 1~2개: 답의 빈칸을 향하는 것\n학생에게 물을 것: 답을 채우려면 필요한 기억이나 사실 하나`;
+  return `${RULES}\n\n${BANK_TXT}\n\n${aCtx(it,qs,q)}\n\n[질문]\n${q.q}\n\n[학생 답변] (공백 뺀 ${n}자, 말하면 약 ${sec}초로 추정)\n${q.a}\n${tails.length?"\n[꼬리질문과 답]\n"+tails.map((t,k)=>`꼬리${k+1}. ${t.q}\n답: ${t.a||"(없음)"}`).join("\n"):""}\n\n[할 일] 이 답변을 면접 답변 기준과 아래 [추가 기준 3개]로 채점해.\n\n[추가 기준 3개]\n- 구조: 질문 종류에 맞는 틀(판단=입장→이유→사례→정리 / 경험=상황·과제→행동→결과→배운 점 / 개념=개념→원리→사례)을 순서대로 따랐는지, 문장끼리 자연스럽게 이어지는지, 한 답에 이야기 줄기가 하나인지. 순서가 뒤섞였거나 같은 말을 되풀이하면 어디인지 짚는다.\n- 학과 적합: 금융·빅데이터학부(통계, 데이터를 모으고 해석함, 금융 판단 기준)에 닿는 관점이나 배운 점이 답에 담겼는지. 학과 이름을 매번 넣으라는 뜻이 아니다. 억지로 이어 붙였으면 그 구절을 짚는다. 학과와 먼 활동이면 실제로 한 일(자료를 찾고 비교·정리함 등) 중 데이터와 닿는 것 하나로 자연스럽게 닿는지 본다. 질문이 학과를 묻지 않았는데 안 닿은 것은 큰 문제로 보지 않는다. 학과 방향이나 확정된 3년 흐름과 어긋나는 말은 반드시 짚는다.\n- 맥락: 질문이 실제로 묻는 것(의도)에 답했는지, 문단 전체의 맥락(그 활동을 왜 했고 무엇을 했고 무엇을 남겼는지)을 바르게 읽었는지, 문단의 다른 활동 내용을 잘못 섞지 않았는지, 확정된 3년 흐름과 맞는지. \n- 질문과 다른 이야기를 했거나 문단 맥락을 잘못 읽었으면 판정은 다시 쓰기다.\n- O·△·X, 상·중·하, 점수 같은 등급 기호를 어디에도 쓰지 않는다. 기준마다 무엇이 됐고 무엇이 부족한지 말로만 쓴다.\n\n출력 형식: 먼저 [결과]만 4줄 이내로 쓰고, 다음 줄에 정확히 ===해설=== 한 줄을 쓴 뒤, 그 아래에 나머지를 순서대로 써.\n[결과] "판정: 바로 연습/한 곳 수정/다시 쓰기" 중 하나 + 한 줄 이유 (바로 연습=3원칙이 갖춰져 소리 내어 연습하면 됨, 한 곳 수정=한 곳만 고치면 됨, 다시 쓰기=첫 문장이 결론이 아니거나 질문에 안 맞거나 위험 표현이 있음) 한 줄 + "잘된 점: ○○" 한 줄 + "가장 먼저 고칠 것: ○○" 한 줄\n[해설]\n판정 이유: 한 줄\n질문 종류와 맞는 틀: 판단/경험/개념 중 무엇이고 그 틀을 따랐는지\n두괄성: 첫 문장이 질문에 대한 답인지 한 줄\n구체성: 생기부에 적힌 행동·장면·구체어가 있는지 한 줄\n성찰성: 배운 점이 변화나 다음 행동으로 이어지는지 한 줄 (개념 질문이면 \"해당 없음\")\n구조: 한 줄 (어느 순서가 어긋났는지, 괜찮으면 \"틀대로 이어짐\")\n학과 적합: 한 줄 (닿는 구절, 억지면 어디가 억지인지)\n맥락: 한 줄 (질문 의도와 문단에서 읽어야 할 맥락을 제대로 잡았는지)\n길이: 추정 초 / 이 질문의 목표 시간(활동 등급과 질문 종류로 정함) / 몇 초 줄이거나 늘릴지와 어디를 덜어낼지\n위험 표현: 블라인드 위반, 생기부에 없는 말, 설명 못 할 용어, 누구나 하는 말, 성적 숫자 (없으면 "없음")\n고칠 곳 1~2개: 어디를 어떻게 (완성 문장 말고 방향과 짧은 구절)\n예상 꼬리질문 1~2개: 답의 빈칸을 향하는 것, 그중 하나는 답의 약한 고리를 반박하는 압박 꼬리 (지어낸 질문이면 표시)\n압박 대응: 본 질문이나 꼬리가 압박 질문이면 인정→근거→보완 순서인지 한 줄 (압박 질문이 없으면 이 줄 생략)\n학생에게 물을 것: 답을 채우려면 필요한 기억이나 사실 하나`;
 }
 function aiErrCopy(c){
   return ({not_granted:"Claude 사용을 허락하지 않아서 검사를 쓸 수 없어요.",sampling_disabled:"이 계정에서는 Claude 검사를 쓸 수 없어요.",rate_limited:"요청이 많아요. 잠시 뒤에 다시 눌러 주세요.",session_expired:"다시 로그인해 주세요.",refused:"이 내용은 검사하지 못했어요. 문장을 바꿔 다시 시도해 주세요.",empty_completion:"답이 비어 있어요. 다시 눌러 주세요.",prompt_too_large:"내용이 너무 길어요. 답변을 줄여 주세요.",cancelled:""})[c]??"검사가 중간에 끊겼어요. 다시 눌러 주세요.";
@@ -268,7 +310,7 @@ function recsOf(t){
   const i=(t||"").indexOf(REC_SEP);if(i<0)return [];
   const r=t.slice(i+REC_SEP.length),a=r.indexOf("["),b=r.lastIndexOf("]");
   if(a<0||b<a)return [];
-  try{const arr=JSON.parse(r.slice(a,b+1));return (Array.isArray(arr)?arr:[]).filter(x=>x&&typeof x.q==="string"&&x.q.trim()).slice(0,3).map(x=>({q:x.q.trim(),why:String(x.why||""),src:String(x.src||"")}))}catch(e){return []}
+  try{const arr=JSON.parse(r.slice(a,b+1));return (Array.isArray(arr)?arr:[]).filter(x=>x&&typeof x.q==="string"&&x.q.trim()).slice(0,4).map(x=>({q:x.q.trim(),why:String(x.why||""),src:String(x.src||""),p:x.p===true}))}catch(e){return []}
 }
 function aiSplit(t){t=t||"";const k=t.indexOf(REC_SEP);if(k>=0)t=t.slice(0,k);const i=t.indexOf(AI_SEP);return i<0?[t.trim(),""]:[t.slice(0,i).replace(/\[결과\]\s*/,"").trim(),t.slice(i+AI_SEP.length).replace(/^\s*\[해설\]\s*/,"").trim()]}
 const VERD={
@@ -337,7 +379,7 @@ function aiSaved(label,rec,kind,now){
   const what=kind==="a"?"질문이나 답변이":kind==="s"?"질문 목록이":"질문이";
   const recs=kind==="s"?recsOf(rec.t):[],added=rec.added||[];
   const recHTML=recs.length?`<div class="sug"><p class="ai-label">더 넣을 질문 추천</p><ul class="sug-list">${recs.map((x,i)=>`<li class="sug-item">
-      <p class="sug-q">${esc(x.q)}</p>
+      <p class="sug-q">${x.p?`<span class="badge bad sug-p">압박</span> `:""}${esc(x.q)}</p>
       <p class="sug-why">${esc(x.why)}${x.src?` · ${esc(x.src)}`:""}</p>
       <button type="button" class="ghost sug-add" data-act="fb-add" data-v="${i}"${added.includes(i)?" disabled":""}>${added.includes(i)?"✓ 추가됨":"+ 질문에 추가"}</button>
     </li>`).join("")}</ul></div>`:"";
@@ -376,10 +418,11 @@ ${BANK_TXT}
 [꼬리질문을 고르는 기준]
 - 먼저 본 질문이 무엇을 묻는지 본다. 그리고 본 질문이 묻지 않은 쪽을 꼬리로 고른다. 순서: 무엇 → 왜 그렇게 정했나(이유) → 어떻게 했나·본인이 한 것(방법·역할) → 결과는 어땠나 → 지금 보면·다시 한다면(성찰).
   예: 본 질문이 "경제적 목표가 무엇인가요?"(무엇)라면 꼬리 1순위는 "왜 그렇게 정했나요?"(이유).
-- 학생 답변이 있으면 답변의 빈칸을 향한다: 답에서 꺼낸 용어의 뜻, 말하지 않은 본인 역할, 말하지 않은 결과, 근거 없이 단정한 말.
+- 학생 답변이 있으면 꼬리는 모두 그 답에서 나와야 한다: 답에서 꺼낸 용어의 뜻, 근거 없이 단정한 말, 말하지 않은 본인 역할·방법·결과·이유, 답이 열어 두고 설명하지 않은 빈칸. 생기부 문장에만 있고 답에 나오지 않은 내용으로 꼬리를 만들지 않는다. 각 꼬리의 why에 답의 어느 구절에서 나왔는지 짧게 인용한다. 답이 없으면 문장에서 고른다.
 - 문장에 교과·전공 개념이 있으면 그 개념의 정의를 묻는 꼬리를 하나 넣을 수 있다(가천대는 개념 꼬리를 자주 묻는다).
 - 실제 기출 꼬리 모양: "그 결과 값은 어떻게 나왔나요?", "혼자서 했나요?", "그중에서 본인의 아이디어는 어떤 거예요?", "그 지식은 어떻게 알게 되었나요? 인터넷으로?", "그럼 ○○라고 할 수 있을까요?", "(개념) 설명해 보세요".
-- 이미 있는 꼬리질문과 겹치지 않는다. 한 질문에 하나만 묻고 짧게 쓴다. 학과 연결 질문은 꼬리로 넣지 않는다.
+- 이미 있는 꼬리질문과 겹치지 않는다. 한 질문에 하나만 묻고 짧게 쓴다. 학과 연결 꼬리는 문장이 학과와 멀 때만 1개까지 넣는다(실제 기출: "방금 말한 내용이 경영학과와 어떤 연관이 있는지 설명해줄 수 있어요?" [2025 경희대 경영학과]).
+- 압박 꼬리 1개를 꼭 넣는다: 답이 있으면 답에서 단정한 말·고른 방법·내린 판단의 약한 고리를 반박하고, 답이 없으면 문장 속 판단을 반박한다. 그 항목은 "p":true로 표시한다.
 - 2~4개. 학생이 가장 답하기 어려울 것부터.
 
 ${aiCtx(it,qs)}
@@ -388,16 +431,16 @@ ${aiCtx(it,qs)}
 ${q.q}
 ${q.a&&q.a.trim()?"\n[학생 답변]\n"+q.a+"\n":"\n[학생 답변] 아직 없음\n"}${tails.length?"\n[이미 있는 꼬리질문]\n"+tails.map(t=>"- "+t.q).join("\n")+"\n":""}
 [할 일] 꼬리질문을 추천해. 다른 말 없이 JSON 배열만 써.
-형식: [{"q":"꼬리질문","why":"왜 이걸 묻는지 한 마디 (예: 본 질문이 이유를 안 물음)","src":"기출 모양이면 본뜬 기출 몇 마디, 아니면 지어낸 질문"}]`;
+형식: [{"q":"꼬리질문","why":"왜 이걸 묻는지 한 마디 (예: 본 질문이 이유를 안 물음)","src":"기출 모양이면 본뜬 기출 몇 마디, 아니면 지어낸 질문","p":false}]`;
 }
-async function sugRun(){
-  const c=cur(),id=c.id,qid=c.qid,it=items.get(id);if(!smp||smpOff||SG.busy||AI.busy||!it)return;
+async function sugRun(oid,oqid){
+  const c=cur(),id=oid||c.id,qid=oqid||c.qid,it=items.get(id);if(!smp||smpOff||SG.busy||AI.busy||!it)return;
   flushAll();
   const qs=qsOf(id),q=qs.find(x=>x.id===qid);if(!q)return;
-  const ctl=new AbortController();SG={qid:q.id,busy:true,err:"",ctl};render(true);
+  const ctl=new AbortController();SG={qid:q.id,busy:true,err:"",ctl};render(!oid);
   try{
     const arr=await smp.json(sugPrompt(it,qs,q),{signal:ctl.signal,cache:false});
-    const list=(Array.isArray(arr)?arr:[]).filter(x=>x&&typeof x.q==="string"&&x.q.trim()).slice(0,4).map(x=>({q:x.q.trim(),why:String(x.why||""),src:String(x.src||""),added:false}));
+    const list=(Array.isArray(arr)?arr:[]).filter(x=>x&&typeof x.q==="string"&&x.q.trim()).slice(0,5).map(x=>({q:x.q.trim(),why:String(x.why||""),src:String(x.src||""),p:x.p===true,added:false}));
     SG={qid:null,busy:false,err:list.length?"":"추천이 비어 있어요. 다시 눌러 주세요.",ctl:null};
     if(list.length)updateQuestions(id,qs2=>{const x=qs2.find(y=>y.id===q.id);if(x)x.tsug={list,at:Date.now(),src:q.q}});
     else SG.qid=q.id;
@@ -408,20 +451,20 @@ async function sugRun(){
   }
   render();
 }
-function sugAdd(i){
-  const c=cur(),q=qsOf(c.id).find(x=>x.id===c.qid);if(!q||!q.tsug)return;
+function sugAdd(i,oid,oqid){
+  const c0=cur(),c={id:oid||c0.id,qid:oqid||c0.qid},q=qsOf(c.id).find(x=>x.id===c.qid);if(!q||!q.tsug)return;
   const s=q.tsug.list[i];if(!s||s.added)return;
   updateQuestions(c.id,qs=>{const x=qs.find(y=>y.id===c.qid);if(!x)return;(x.tails=x.tails||[]).push({id:uid(),q:s.q,a:""});if(x.tsug&&x.tsug.list[i])x.tsug.list[i].added=true});
 }
-function sugHTML(q){
+function sugHTML(q,oid){
   if(SG.qid===q.id&&SG.busy)return `<p class="ai-out wait">꼬리질문 고르는 중…</p>`;
   const err=SG.qid===q.id&&SG.err?`<p class="ai-err">${esc(SG.err)}</p>`:"";
   const t=q.tsug;if(!t||!t.list||!t.list.length)return err;
   const stale=t.src!=null&&t.src!==q.q;
   return err+`<div class="sug"><p class="ai-label">꼬리질문 추천 · ${fmtAt(t.at)}</p>${stale?`<p class="ai-stale">질문이 바뀌기 전 추천이에요. 다시 눌러 주세요.</p>`:""}<ul class="sug-list">${t.list.map((x,i)=>`<li class="sug-item">
-      <p class="sug-q">${esc(x.q)}</p>
+      <p class="sug-q">${x.p?`<span class="badge bad sug-p">압박</span> `:""}${esc(x.q)}</p>
       <p class="sug-why">${esc(x.why)}${x.src?` · ${esc(x.src)}`:""}</p>
-      <button type="button" class="ghost sug-add" data-act="sug-add" data-v="${i}"${x.added?" disabled":""}>${x.added?"✓ 추가됨":"+ 꼬리질문에 추가"}</button>
+      <button type="button" class="ghost sug-add" data-act="sug-add" data-v="${i}"${oid?` data-id="${oid}" data-qid="${q.id}"`:""}${x.added?" disabled":""}>${x.added?"✓ 추가됨":"+ 꼬리질문에 추가"}</button>
     </li>`).join("")}</ul></div>`;
 }
 let QG={id:null,busy:false,err:"",ctl:null};
@@ -438,16 +481,17 @@ ${GL(it.grade)} · ${AREA_KO(it.area)}${it.subject?" · "+it.subject:""}
 - 문장 종류부터 가른다: 활동 문장이면 2~3개, 평가 문장이면 1~2개, 구체적인 단어가 없어 질문이 거의 안 나올 문장이면 0~1개.
 - 가장 위험한 단어를 먼저 고르고, 그 단어를 짚는 질문을 1번에 둔다.
 - 기출 질문 은행에서 가장 닮은 모양을 찾아 그 모양을 본떠 이 문장에 맞게 쓴다. 질문은 짧게, 한 번에 하나만.
-- 학과 연결 질문은 넣지 않는다.
+- 학과 연결 질문은 문장이 학과와 멀 때 1개까지 넣는다. 첫 질문으로 바로 나올 수 있다(실제 기출: "경영경제학과와 동아리에 관련성이 전혀 없는데, 이유가 있나요?" [2025 울산대 경영경제융합학부]).
+- 활동 문장이고 학생의 판단·선택·주장·방법이 적혀 있으면 압박 질문 1개를 마지막에 넣고 "p":true로 표시한다. 평가 문장이나 질문이 거의 안 나올 문장에는 넣지 않는다.
 다른 말 없이 JSON 객체 하나만 써.
-형식: {"type":"활동 문장|평가 문장|질문 거의 안 나옴","risk":"가장 위험한 단어","note":"한 줄 (질문이 거의 안 나오면 그 이유)","list":[{"q":"추천 질문","why":"무엇을 확인하려는 질문인지 한 마디","src":"본뜬 기출 몇 마디와 [연도 학과 · 전형] 또는 공식 기출, 없으면 지어낸 질문"}]}`;
+형식: {"type":"활동 문장|평가 문장|질문 거의 안 나옴","risk":"가장 위험한 단어","note":"한 줄 (질문이 거의 안 나오면 그 이유)","list":[{"q":"추천 질문","why":"무엇을 확인하려는 질문인지 한 마디","src":"본뜬 기출 몇 마디와 [연도 학과 · 전형] 또는 공식 기출, 없으면 지어낸 질문","p":false}]}`;
 }
 async function qsugRun(){
   const c=cur(),id=c.id,it=items.get(id);if(!smp||smpOff||QG.busy||AI.busy||!it)return;
   const ctl=new AbortController();QG={id,busy:true,err:"",ctl};render(true);
   try{
     const o=await smp.json(qsugPrompt(it),{signal:ctl.signal,cache:false});
-    const list=(o&&Array.isArray(o.list)?o.list:[]).filter(x=>x&&typeof x.q==="string"&&x.q.trim()).slice(0,4).map(x=>({q:x.q.trim(),why:String(x.why||""),src:String(x.src||""),added:false}));
+    const list=(o&&Array.isArray(o.list)?o.list:[]).filter(x=>x&&typeof x.q==="string"&&x.q.trim()).slice(0,5).map(x=>({q:x.q.trim(),why:String(x.why||""),src:String(x.src||""),p:x.p===true,added:false}));
     const rec={type:String(o&&o.type||""),risk:String(o&&o.risk||""),note:String(o&&o.note||""),list,at:Date.now(),src:it.sentence};
     QG={id:null,busy:false,err:"",ctl:null};
     it.qsug=rec;writeItem(id,{qsug:rec});
@@ -483,14 +527,14 @@ function qsugHTML(id){
     <div class="fx-verdict">${r.type?`<span class="badge ${tone}">${esc(r.type)}</span>`:""}${r.risk?`<span class="fx-legend">가장 위험한 단어: <b>${esc(r.risk)}</b></span>`:""}</div>
     ${r.note?`<p class="fx-why">${esc(r.note)}</p>`:""}
     ${r.list.length?`<ul class="sug-list">${r.list.map((x,i)=>`<li class="sug-item">
-      <p class="sug-q">${esc(x.q)}</p>
+      <p class="sug-q">${x.p?`<span class="badge bad sug-p">압박</span> `:""}${esc(x.q)}</p>
       <p class="sug-why">${esc(x.why)}${x.src?` · ${esc(x.src)}`:""}</p>
       <button type="button" class="ghost sug-add" data-act="qsug-add" data-v="${i}"${x.added?" disabled":""}>${x.added?"✓ 추가됨":"+ 질문에 추가"}</button>
     </li>`).join("")}</ul>`:""}
   </div>`;
 }
-async function aiRun(kind){
-  const c=cur(),id=c.id,qid=c.qid,it=items.get(id);if(!smp||smpOff||AI.busy||!it)return;
+async function aiRun(kind,oid,oqid){
+  const c=cur(),id=oid||c.id,qid=oqid||c.qid,it=items.get(id);if(!smp||smpOff||AI.busy||!it)return;
   flushAll();
   const qs=qsOf(id),q=kind==="s"?null:qs.find(x=>x.id===qid);
   if(kind!=="s"&&!q)return;
@@ -513,6 +557,139 @@ async function aiRun(kind){
   }
   render();
 }
+
+/* ---------- paragraphs ---------- */
+const pn=t=>String(t||"").replace(/['‘’"“”]/g,"").trim();
+const PARA_START=[];
+function paraList(){
+  const out=[];let cp=null;
+  all().forEach(it=>{
+    if(it.area==="common")return;
+    const sec=it.grade+"|"+it.area+"|"+(it.subject||""),t=pn(it.sentence);
+    const brk=!cp||cp.sec!==sec||(it.para?cp.para!==it.para:(cp.para?true:PARA_START.some(x=>t.startsWith(x))));
+    if(brk){cp={key:it.id,sec,para:it.para||"",grade:it.grade,area:it.area,subject:it.subject||"",ids:[]};out.push(cp)}
+    cp.ids.push(it.id);
+  });
+  return out;
+}
+function paraOf(id){return paraList().find(x=>x.ids.includes(id))||null}
+function mainOf(pr){const m=(items.get(pr.key)||{}).mainQ;return m&&pr.ids.some(id=>qsOf(id).some(q=>q.id===m))?m:null}
+function aCtx(it,qs,q){
+  if(it.area==="common")return aiCtx(it,qs);
+  const iid=it.id||([...items.entries()].find(([k,v])=>v===it)||[])[0];
+  const pr=iid?paraOf(iid):null;if(!pr)return aiCtx(it,qs);
+  const sents=pr.ids.map((id,i)=>`${i+1}) ${items.get(id).sentence}`).join("\n");
+  const idx=pr.ids.indexOf(iid)+1,others=[];
+  pr.ids.forEach((id,i)=>qsOf(id).forEach(x=>{if(x.id!==q.id)others.push(`- (문장 ${i+1}) ${x.q}${x.a&&x.a.trim()?"\n  답: "+x.a.trim().slice(0,240):""}`)}));
+  const role="본질문 후보: 학생은 실제 본질문이 어떤 종류로 올지 몰라 이 문단에 여러 종류의 질문을 써 두었고, 각 질문이 본질문으로 온다고 보고 답을 쓴다. 이 답을 본질문 답 기준으로 채점한다. 아래 [꼬리질문과 답]이 있으면 그것은 이 답에서 나온 꼬리다.";
+  return `[이 질문의 역할] ${role}\n\n[생기부 문단 전체] ${GL(it.grade)} · ${AREA_KO(it.area)}${it.subject?" · "+it.subject:""}\n${sents}\n\n[이 질문이 붙은 문장] ${idx}번 "${it.sentence}"\n\n[같은 문단의 다른 질문과 학생 답]\n${others.length?others.join("\n"):"(없음)"}\n\n[문단 기준 채점 규칙]\n- 답은 이 문단 전체를 근거로 본다. 문단의 다른 문장에 적힌 내용(방법, 결과, 배운 점)을 답에 쓰는 것은 생기부에 있는 말이다. 질문이 붙은 문장에만 없다고 "생기부에 없는 말"로 보지 않는다.\n- 문단에 적힌 결과·배운 점을 답에서 빠뜨렸으면 "문단 ○번 문장의 ○○를 쓸 수 있다"처럼 번호로 짚는다.\n- 같은 문단의 다른 질문 답과 세부가 많이 겹치면 짚는다. 단 핵심 줄기가 여러 답에 같이 나오는 것은 괜찮다(실제로는 그중 한 질문만 나올 수 있다).\n- 문단 어디에도 없는 내용은 여전히 "생기부에 없는 말"이다. 지금 다시 본 해석은 시점을 밝혔는지 본다.`;
+}
+const PL={grade:"all",area:"all",all:false};
+const PQ={min:false,cur:null};
+document.addEventListener("focusin",e=>{
+  const t=e.target;if(!t||!t.id||!t.id.startsWith("pa-"))return;
+  const id=t.dataset.id;PQ.cur=id;
+  const box=document.getElementById("pquote");if(!box)return;
+  box.querySelectorAll(".ps").forEach(n=>n.classList.toggle("cur",n.dataset.sid===id));
+  const el=box.querySelector(`.ps[data-sid="${id}"]`);if(el){const bt=box.getBoundingClientRect(),et=el.getBoundingClientRect();if(et.top<bt.top||et.bottom>bt.bottom)box.scrollTop+=et.top-bt.top-8}
+});
+function vPlist(){
+  if(db&&!loaded)return `<h1 class="title">답변 쓰기</h1><p class="empty">불러오는 중…</p>`;
+  const rows=paraList().filter(x=>(PL.grade==="all"||String(x.grade)===PL.grade)&&(PL.area==="all"||x.area===PL.area))
+    .map(x=>{const qs=x.ids.flatMap(id=>qsOf(id));return{x,n:qs.length,a:qs.filter(q=>q.a&&q.a.trim()).length}}).filter(r=>PL.all||r.n>0);
+  return `<h1 class="title">답변 쓰기</h1>
+    <p class="hint">문단 전체를 보면서 그 문단의 질문에 한꺼번에 답해요. 질문은 지금처럼 문장 화면에서 만들어요.</p>
+    ${seg("pl-grade",PL.grade,GRADES)}
+    ${areaChips("pl-area",PL.area,true,true)}
+    ${seg("pl-all",PL.all?"1":"0",[["0","질문 있는 문단"],["1","전체 문단"]])}
+    ${rows.length?`<p class="count">${rows.length}문단</p><ul class="rows">${rows.map(({x,n,a})=>`<li><button type="button" class="row" style="${cvar(x.area)}" data-go="para" data-id="${x.key}">
+      <span class="row-top">${GL(x.grade)} · ${AREA_LABEL[x.area]||"기타"}${x.subject?" · "+esc(x.subject):""} · ${x.ids.length}문장</span>
+      <span class="row-text">${esc(items.get(x.ids[0]).sentence)}</span>
+      <span class="row-meta">${n?`질문 ${n} · <span class="${a===n?"full":""}">답변 ${a}/${n}</span>`:"질문 없음"}</span>
+    </button></li>`).join("")}</ul>`:`<p class="empty">질문이 있는 문단이 없어요. 문장 화면에서 질문을 먼저 만들어 주세요.</p>`}`;
+}
+function paBox(id,q){
+  const hasA=q.a&&q.a.trim(),mine=AI.key==="a:"+q.id,on=smp&&!smpOff;
+  const live=mine?(AI.busy?`<div id="ai-out">${AI.text?aiResultHTML(AI.text,true,"a"):`<p class="ai-out wait">문단 전체를 보고 검사하는 중…</p>`}</div>`:(AI.err?`${AI.text?aiResultHTML(AI.text,false,"a"):""}<p class="ai-err">${esc(AI.err)}</p>`:"")):"";
+  return `<div class="region pa-ai" data-region="pa-${q.id}">
+    <div class="ai-btns">${on?`<button type="button" class="ghost" data-act="ai-run" data-v="a" data-id="${id}" data-qid="${q.id}"${AI.busy||!hasA?" disabled":""}>답변 검사 (문단 기준)</button>`:""}${mine&&AI.busy?`<button type="button" class="link" data-act="ai-stop">멈추기</button>`:""}${on?`<button type="button" class="ghost" data-act="sug-run" data-id="${id}" data-qid="${q.id}"${AI.busy||SG.busy?" disabled":""}>${hasA?"이 답에서 꼬리질문 뽑기":"꼬리질문 추천"}</button>`:""}<button type="button" class="link" data-go="question" data-id="${id}" data-qid="${q.id}">꼬리 직접 쓰기·자세히 →</button></div>
+    ${live}${aiSaved("답변 검사 결과",q.afb,"a",srcOf("a",id,q))}${sugHTML(q,id)}
+  </div>`;
+}
+function vPara(c){
+  const pr=paraOf(c.id);
+  if(!pr){if(loaded){nav.pop();render(true)}return null}
+  const it0=items.get(pr.ids[0]);let qn=0;
+  const blocks=pr.ids.map((id,i)=>{
+    const it=items.get(id),qs=qsOf(id);if(!qs.length)return "";
+    return `<section class="pblock"><p class="pb-head"><span class="pnum">${i+1}</span>${esc(it.sentence)}</p>${qs.map(q=>{qn++;const tl=(q.tails||[]);return `<div class="pq">
+      <p class="pq-q"><span class="pq-n">Q${qn}</span>${esc(q.q)}${q.done?` <span class="pq-done">준비 완료</span>`:""}</p>
+      <textarea class="field ans autosave" id="pa-${q.id}" data-id="${id}" data-qid="${q.id}" data-field="a" aria-label="Q${qn} 답변" placeholder="이 질문이 본질문으로 온다고 보고: 질문에 대한 답 → 의도·이유 → 핵심 근거 하나 → 배운 점">${esc(q.a||"")}</textarea>
+      ${tl.length?`<div class="ptails">${tl.map((t,k)=>`<div class="ptail"><p class="ptail-q"><span class="pq-role tail">꼬리 ${k+1}</span> ${esc(t.q)}</p><textarea class="field tail-a autosave" id="pta-${t.id}" data-id="${id}" data-qid="${q.id}" data-tid="${t.id}" data-field="a" aria-label="Q${qn} 꼬리 ${k+1} 답변" placeholder="묻는 것만, 본답보다 짧게">${esc(t.a||"")}</textarea></div>`).join("")}</div>`:""}
+      ${paBox(id,q)}
+    </div>`}).join("")}</section>`;
+  }).join("");
+  return `<div class="pwrap">
+    <aside class="pmemo${PQ.min?" min":""}" id="pmemo" aria-label="생기부 문단">
+      <div class="pmemo-head"><b>문단 메모</b><span class="meta-t">${GL(it0.grade)} · ${AREA_LABEL[it0.area]||"기타"}${it0.subject?" · "+esc(it0.subject):""} · ${pr.ids.length}문장</span><button type="button" class="link pq-min" data-act="pq-min">${PQ.min?"펼치기":"접기"}</button></div>
+      <blockquote class="quote pquote" id="pquote">${pr.ids.map((id,i)=>`<span class="ps${qsOf(id).length?" has":""}${PQ.cur===id?" cur":""}" data-sid="${id}"><sup>${i+1}</sup><span class="pt" data-sid="${id}">${markHTML(items.get(id).sentence,items.get(id).marks)}</span></span>`).join(" ")}</blockquote>
+      <p class="pmemo-foot">드래그하면 형광펜 · 칠한 곳 누르면 지움 · Ctrl+Z(⌘+Z) <button type="button" class="link" data-act="hl-undo">되돌리기</button></p>
+    </aside>
+    <div class="pmain">
+    <h2 class="sub">이 문단의 질문 <span class="count">${qn}개</span></h2>
+    ${qn?blocks:`<p class="hint">이 문단에는 아직 질문이 없어요. 문장 화면에서 질문을 만들어 주세요.</p>`}
+    ${qn?`<p class="hint">답변 검사는 문단 전체와 같은 문단의 다른 답까지 보고 해요. 다른 문장에 적힌 내용도 생기부 근거로 인정해요.</p>`:""}
+    </div>
+  </div>`;
+}
+
+/* ---------- highlighter ---------- */
+function mergeMarks(m){m=(m||[]).filter(x=>x&&x.e>x.s).map(x=>({s:x.s,e:x.e})).sort((a,b)=>a.s-b.s);const o=[];for(const x of m){const l=o[o.length-1];if(l&&x.s<=l.e)l.e=Math.max(l.e,x.e);else o.push(x)}return o}
+function markHTML(t,marks){t=String(t||"");const m=mergeMarks((marks||[]).map(x=>({s:Math.max(0,x.s|0),e:Math.min(t.length,x.e|0)})));let h="",p=0;m.forEach((x,i)=>{h+=esc(t.slice(p,x.s))+`<mark class="hm" data-mi="${i}">${esc(t.slice(x.s,x.e))}</mark>`;p=x.e});return h+esc(t.slice(p))}
+function offIn(el,node,off){const r=document.createRange();r.selectNodeContents(el);r.setEnd(node,off);return r.toString().length}
+const HL_UNDO=[];
+function saveMarks(id,marks,pt,noUndo){const it=items.get(id);if(!it)return;if(!noUndo){HL_UNDO.push({id,prev:mergeMarks(it.marks)});if(HL_UNDO.length>50)HL_UNDO.shift()}it.marks=marks;if(pt)pt.innerHTML=markHTML(it.sentence,marks);writeItem(id,{marks})}
+function selInPara(){const sel=window.getSelection(),box=document.getElementById("pquote");if(!box||!sel||sel.isCollapsed||!sel.rangeCount)return null;const rg=sel.getRangeAt(0);return box.contains(rg.commonAncestorContainer)?{sel,rg,box}:null}
+function applySel(){
+  const x=selInPara();hlBtn(false);if(!x)return false;
+  const{sel,rg,box}=x;let any=false;
+  box.querySelectorAll(".pt").forEach(pt=>{
+    if(!rg.intersectsNode(pt))return;
+    const len=pt.textContent.length;
+    const st=pt.contains(rg.startContainer)?offIn(pt,rg.startContainer,rg.startOffset):0;
+    const en=pt.contains(rg.endContainer)?offIn(pt,rg.endContainer,rg.endOffset):len;
+    if(en-st<1)return;
+    const id=pt.dataset.sid,it=items.get(id);if(!it)return;
+    saveMarks(id,mergeMarks([...(it.marks||[]),{s:st,e:en}]),pt);any=true;
+  });
+  if(any)sel.removeAllRanges();
+  return any;
+}
+function hlUndo(){
+  const u=HL_UNDO.pop();if(!u)return false;
+  saveMarks(u.id,u.prev,document.querySelector(`#pquote .pt[data-sid="${u.id}"]`),true);return true;
+}
+document.addEventListener("keydown",e=>{
+  if(!(e.ctrlKey||e.metaKey)||e.shiftKey||e.altKey||e.code!=="KeyZ")return;
+  if(cur().s!=="para"||textFocused()||!HL_UNDO.length)return;
+  e.preventDefault();hlUndo();
+});
+let hlT=null;
+function hlBtn(on){
+  let b=document.getElementById("hlbtn");
+  if(!b){b=document.createElement("button");b.id="hlbtn";b.type="button";b.className="hlbtn";b.textContent="형광펜 칠하기";
+    b.addEventListener("pointerdown",e=>e.preventDefault());b.addEventListener("mousedown",e=>e.preventDefault());
+    b.addEventListener("click",()=>applySel());document.body.appendChild(b)}
+  b.hidden=!on;
+}
+document.addEventListener("selectionchange",()=>{clearTimeout(hlT);hlT=setTimeout(()=>hlBtn(!!selInPara()),200)});
+document.addEventListener("pointerup",e=>{if(e.pointerType==="mouse"||e.pointerType==="pen")setTimeout(applySel,0)});
+document.addEventListener("click",e=>{
+  const mk=e.target&&e.target.closest&&e.target.closest("#pquote mark.hm");if(!mk)return;
+  const sel=window.getSelection();if(sel&&!sel.isCollapsed)return;
+  const pt=mk.closest(".pt");if(!pt)return;const id=pt.dataset.sid,it=items.get(id);if(!it)return;
+  const m=mergeMarks(it.marks);m.splice(+mk.dataset.mi,1);saveMarks(id,m,pt);
+});
 
 /* ---------- data ---------- */
 function all(){
@@ -595,7 +772,7 @@ let composing=false;
 document.addEventListener("compositionstart",()=>{composing=true});
 document.addEventListener("compositionend",()=>{composing=false;
   if(navAfterCompose){const key=navAfterCompose;navAfterCompose=null;setTimeout(()=>navArrow({key,preventDefault(){}}),0)}if(pending)setTimeout(()=>{if(textFocused())patchRegions()},0)});
-const VIEWS={home:vHome,add:vAdd,browse:vBrowse,sentence:vSentence,question:vQuestion,psetup:vSetup,practice:vPractice};
+const VIEWS={home:vHome,add:vAdd,browse:vBrowse,sentence:vSentence,question:vQuestion,psetup:vSetup,practice:vPractice,plist:vPlist,para:vPara};
 // 입력칸에 커서가 있을 때는 그 칸을 건드리지 않고, 목록 같은 표시 영역(data-region)만 바로 바꾼다.
 function patchRegions(){
   const box=$("#screen"),c=cur(),fn=VIEWS[c.s];
@@ -615,7 +792,10 @@ function render(force){
     +`<span class="sync ${sync.cls}" id="sync"><i></i>${esc(sync.text)}</span>`;
   const fn=VIEWS[c.s]||vHome;
   const html=fn(c);if(html==null)return;
+  document.body.dataset.s=c.s;
+  const pqs=(document.getElementById("pquote")||{}).scrollTop||0;
   $("#screen").innerHTML=(banner?`<div class="banner">${esc(banner)}</div>`:"")+html;
+  if(pqs&&force!==true){const n=document.getElementById("pquote");if(n)n.scrollTop=pqs}
   if(force===true){window.scrollTo(0,0);$("#screen").style.animation="none";void $("#screen").offsetWidth;$("#screen").style.animation=""}
 }
 function focusLater(sel){requestAnimationFrame(()=>{const el=$(sel);if(el){el.focus();try{const n=el.value.length;el.setSelectionRange(n,n)}catch(e){}}})}
@@ -632,6 +812,7 @@ function vHome(){
   return `<nav class="menu" aria-label="메뉴">
       <button type="button" class="tile${practiceMain?" main":""}" data-go="psetup"><b>면접 연습</b><small>${st.q?`내가 쓴 질문 ${st.q}개로 연습`:"질문을 쓰면 시작할 수 있어요"}</small></button>
       <button type="button" class="tile" data-go="common"><b>공통 질문</b><small>${(()=>{const c=all().filter(x=>x.area==="common");const n=c.reduce((a,x)=>a+qsOf(x.id).length,0);return c.length?`자기소개·지원동기·성적 질문 등 ${n}개`:"자기소개, 지원동기 같은 모든 지원자 질문"})()}</small></button>
+      <button type="button" class="tile" data-go="plist"><b>답변 쓰기</b><small>${(()=>{const ps=paraList().filter(p=>p.ids.some(id=>qsOf(id).length));return ps.length?`문단 ${ps.length}개 · 문단 전체를 보며 답변`:"문단 전체를 보며 그 문단 질문에 답해요"})()}</small></button>
       <button type="button" class="tile" data-go="browse"><b>내 생기부</b><small>${st.n?`문장 ${st.n}개 · 질문 ${st.q}개 · 답변 ${st.a}개`:"문장을 보며 질문과 답변을 직접 써요"}</small></button>
       <button type="button" class="tile${practiceMain?"":" main"}" data-go="add"><b>문장 추가</b><small>생기부 내용을 붙여넣기</small></button>
     </nav>`;
@@ -706,6 +887,7 @@ function vSentence(c){
         <span class="qs">${q.done?"준비 완료":(q.a&&q.a.trim()?"답변 작성됨":"답변 없음")}${(q.tails||[]).length?` · 꼬리질문 ${q.tails.length}`:""}</span></button></li>`).join("")}</ul>`
       :`<p class="hint">이 문장을 보고 면접관이 물을 만한 질문을 적어보세요.</p>`}
     </div>
+    ${S.editing||it.area==="common"?"":`<button type="button" class="ghost" data-go="para" data-id="${c.id}">이 문단 전체 보고 답변 쓰기 →</button>`}
     ${S.editing?"":aiBox("s",c.id,null)}
     <form class="addq" data-act="add-q"><input class="field" id="s-addq" value="${esc(S.drafts[c.id]||"")}" placeholder="이 문장을 보고 면접 질문을 직접 써보세요" autocomplete="off" aria-label="새 질문"><button class="primary sm">추가</button></form>
     ${S.editing?"":(()=>{const l=browseList(),i=l.findIndex(x=>x.id===c.id);return i<0?"":`<div class="pager">
@@ -719,6 +901,7 @@ function vQuestion(c){
   const it=items.get(c.id),qs=qsOf(c.id),i=qs.findIndex(q=>q.id===c.qid),q=qs[i];
   if(!it||!q){if(loaded){nav.pop();render(true)}return null}
   return `<p class="ctx">${esc(it.sentence)}</p>
+    ${it.area==="common"?"":`<button type="button" class="link" data-go="para" data-id="${c.id}">문단 전체 보며 답변 쓰기 →</button>`}
     <p class="qno">Q${i+1} / ${qs.length}</p>
     ${S.editing?`<div class="edit"><textarea class="field" id="q-edit" rows="3" aria-label="질문">${esc(q.q)}</textarea>
         <div class="edit-actions"><button type="button" class="primary sm" data-act="q-save">수정 저장</button><button type="button" class="link" data-act="q-cancel">취소</button></div></div>`
@@ -884,7 +1067,7 @@ async function saveAdd(){
   let n=0;const base=Date.now();
   try{
     for(const s of parts){
-      await db.collection("items").doc().set({grade:A.grade,area:A.area,subject:A.subject.trim(),sentence:s,questions:[],createdAt:base+n,updatedAt:base+n});n++;
+      await db.collection("items").doc().set({grade:A.grade,area:A.area,subject:A.subject.trim(),sentence:s,questions:[],...(parts.length>1?{para:"p"+base}:{}),createdAt:base+n,updatedAt:base+n});n++;
     }
     A.text="";A.msg=`✓ ${n}개 문장을 저장했어요. 이어서 추가할 수 있어요.`;A.bad=false;
   }catch(err){A.msg=(n?`${n}개까지 저장됨. `:"")+errText(err);A.bad=true}
@@ -899,7 +1082,7 @@ document.addEventListener("click",e=>{
     const s=g.dataset.go;
     if(s==="common"){B.area="common";B.grade="all";B.q="";go("browse");return}
     if(s==="browse"&&B.area==="common"&&cur().s==="home")B.area="all";
-    if(s==="question"||s==="sentence")go(s,{id:g.dataset.id,qid:g.dataset.qid});else go(s);
+    if(s==="question"||s==="sentence"||s==="para")go(s,{id:g.dataset.id,qid:g.dataset.qid});else go(s);
     if(s==="add")A.msg="";
     return;
   }
@@ -946,12 +1129,18 @@ document.addEventListener("click",e=>{
       else{S.confirm="t:"+v;clearTimeout(confirmTimer);confirmTimer=setTimeout(()=>{S.confirm=null;render(1)},3500);render(1)}
       break;
     case "kfix":kApply();break;
-    case "ai-run":aiRun(v);break;
-    case "sug-run":sugRun();break;
+    case "ai-run":aiRun(v,b.dataset.id,b.dataset.qid);break;
+    case "pl-grade":PL.grade=v;render(1);break;
+    case "pl-area":PL.area=v;render(1);break;
+    case "pl-all":PL.all=v==="1";render(1);break;
+    case "hl-undo":hlUndo();break;
+    case "pq-main":{const k=b.dataset.id,it=items.get(k);if(!it)break;flushAll();const nv=it.mainQ===v?null:v;it.mainQ=nv;writeItem(k,{mainQ:nv});render();break}
+    case "pq-min":{PQ.min=!PQ.min;const bx=document.getElementById("pmemo");if(bx)bx.classList.toggle("min",PQ.min);b.textContent=PQ.min?"펼치기":"접기";break}
+    case "sug-run":sugRun(b.dataset.id,b.dataset.qid);break;
     case "qsug-run":qsugRun();break;
     case "qsug-add":qsugAdd(+v);break;
     case "fb-add":fbAdd(+v);break;
-    case "sug-add":sugAdd(+v);break;
+    case "sug-add":sugAdd(+v,b.dataset.id,b.dataset.qid);break;
     case "ai-stop":if(AI.ctl)AI.ctl.abort();break;
     case "p-tail":P.tail++;P.start=Date.now();render(1);break;
     case "p-grade":P.grade=v;render(1);break;
