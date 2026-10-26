@@ -243,10 +243,18 @@ mark.hm{background:#FFE14D;color:#8A120B;border-radius:2px;padding:0 1px;cursor:
 .pblock.pmainq{border-top:0;padding:14px;border:2px solid var(--ok);border-radius:16px}
 .pq-role{font-size:11px;padding:1px 8px;vertical-align:2px}
 .pq-role.tail{display:inline-block;border:1px solid var(--line);border-radius:999px;color:var(--ink-2);font-weight:600}
+.subs{display:grid;gap:8px;margin-top:6px;padding-left:14px;border-left:2px dashed var(--line)}
+.sub{display:grid;gap:6px}
+.sub-add .field{font-size:14px}
+.addq .primary.sm{white-space:nowrap;flex:none}
 .ptails{display:grid;gap:10px;padding-left:14px;border-left:3px solid var(--line)}
 .ptail{display:grid;gap:6px}
 .ptail-q{margin:0;font-weight:600;font-size:14px;word-break:keep-all;overflow-wrap:anywhere}
 .ptail .tail-a{min-height:72px}
+.rew{border:2px solid var(--ok);border-radius:14px;padding:12px 14px;display:grid;gap:8px;background:var(--surface)}
+.rew-n{font-weight:500;color:var(--ink-2);font-size:12px;margin-left:6px}
+.rew-t{font-size:15px;line-height:1.8;word-break:keep-all;overflow-wrap:anywhere}
+.rew .link{justify-self:end}
 .pa-ai{display:flex;flex-direction:column;gap:8px}
 .sug-q{margin:0;font-weight:700;word-break:keep-all;overflow-wrap:anywhere}
 .sug-why{margin:0;font-size:13px;color:var(--ink-2);word-break:keep-all}
@@ -298,7 +306,7 @@ function aiPrompt(kind,it,qs,q){
   if(kind==="q")return `${RULES}\n\n${BANK_TXT}\n\n${aiCtx(it,qs)}\n\n[검사할 질문]\n${q.q}\n\n[할 일] 이 질문이 실제 면접에서 이 문장을 보고 나올 만한 질문인지 심사위원 입장에서 검사해. 짧게.\n\n출력 형식: 먼저 [결과]만 3줄 이내로 쓰고, 다음 줄에 정확히 ===해설=== 한 줄을 쓴 뒤, 그 아래에 나머지를 순서대로 써.\n[결과] "판정: 실전형/보완 필요/빗나감" 중 하나 + 한 줄 이유 (실전형=이 문장을 보고 실제로 나올 질문이고 위험한 단어를 짚음, 보완 필요=나올 수는 있지만 핵심을 비껴가거나 두 가지를 한 번에 물음, 빗나감=문장 내용과 상관없음. 학과와 먼 문장에서 묻는 학과 연결 질문은 빗나감이 아니라 실전형으로 본다) 한 줄 + "다듬은 질문: ○○" 한 줄 (그대로 좋으면 "다듬은 질문: 그대로")\n[해설]\n가장 위험한 단어: 이 문장에서 하나\n판정 이유: 한 줄 (질문이 짧은 것은 장점이다)\n렌즈: 검증/개념/이유/연결/압박 중 무엇인지 (압박이면 반례·한계/정당성/선택 이유/일관성 중 어느 유형인지)\n기출 근거: 위 기출 목록에서 닮은 모양 하나 (없으면 "기출에 닮은 모양 없음")\n고칠 점: 표현, 길이, 두 개를 한 번에 묻는지, 오타\n다듬은 질문: 한 줄 (그대로 좋으면 "그대로")\n이어질 꼬리질문 1~2개`;
   const n=(q.a||"").replace(/\s/g,"").length,sec=Math.round(n/5);
   const tails=(q.tails||[]).filter(t=>t.q&&t.q.trim());
-  return `${RULES}\n\n${BANK_TXT}\n\n${aCtx(it,qs,q)}\n\n[질문]\n${q.q}\n\n[학생 답변] (공백 뺀 ${n}자, 말하면 약 ${sec}초로 추정)\n${q.a}\n${tails.length?"\n[꼬리질문과 답]\n"+tails.map((t,k)=>`꼬리${k+1}. ${t.q}\n답: ${t.a||"(없음)"}`).join("\n"):""}\n\n[할 일] 이 답변을 면접 답변 기준과 아래 [추가 기준 3개]로 채점해.\n\n[추가 기준 3개]\n- 구조: 질문 종류에 맞는 틀(판단=입장→이유→사례→정리 / 경험=상황·과제→행동→결과→배운 점 / 개념=개념→원리→사례)을 순서대로 따랐는지, 문장끼리 자연스럽게 이어지는지, 한 답에 이야기 줄기가 하나인지. 순서가 뒤섞였거나 같은 말을 되풀이하면 어디인지 짚는다.\n- 학과 적합: 금융·빅데이터학부(통계, 데이터를 모으고 해석함, 금융 판단 기준)에 닿는 관점이나 배운 점이 답에 담겼는지. 학과 이름을 매번 넣으라는 뜻이 아니다. 억지로 이어 붙였으면 그 구절을 짚는다. 학과와 먼 활동이면 실제로 한 일(자료를 찾고 비교·정리함 등) 중 데이터와 닿는 것 하나로 자연스럽게 닿는지 본다. 질문이 학과를 묻지 않았는데 안 닿은 것은 큰 문제로 보지 않는다. 학과 방향이나 확정된 3년 흐름과 어긋나는 말은 반드시 짚는다.\n- 맥락: 질문이 실제로 묻는 것(의도)에 답했는지, 문단 전체의 맥락(그 활동을 왜 했고 무엇을 했고 무엇을 남겼는지)을 바르게 읽었는지, 문단의 다른 활동 내용을 잘못 섞지 않았는지, 확정된 3년 흐름과 맞는지. \n- 질문과 다른 이야기를 했거나 문단 맥락을 잘못 읽었으면 판정은 다시 쓰기다.\n- O·△·X, 상·중·하, 점수 같은 등급 기호를 어디에도 쓰지 않는다. 기준마다 무엇이 됐고 무엇이 부족한지 말로만 쓴다.\n\n출력 형식: 먼저 [결과]만 4줄 이내로 쓰고, 다음 줄에 정확히 ===해설=== 한 줄을 쓴 뒤, 그 아래에 나머지를 순서대로 써.\n[결과] "판정: 바로 연습/한 곳 수정/다시 쓰기" 중 하나 + 한 줄 이유 (바로 연습=3원칙이 갖춰져 소리 내어 연습하면 됨, 한 곳 수정=한 곳만 고치면 됨, 다시 쓰기=첫 문장이 결론이 아니거나 질문에 안 맞거나 위험 표현이 있음) 한 줄 + "잘된 점: ○○" 한 줄 + "가장 먼저 고칠 것: ○○" 한 줄\n[해설]\n판정 이유: 한 줄\n질문 종류와 맞는 틀: 판단/경험/개념 중 무엇이고 그 틀을 따랐는지\n두괄성: 첫 문장이 질문에 대한 답인지 한 줄\n구체성: 생기부에 적힌 행동·장면·구체어가 있는지 한 줄\n성찰성: 배운 점이 변화나 다음 행동으로 이어지는지 한 줄 (개념 질문이면 \"해당 없음\")\n구조: 한 줄 (어느 순서가 어긋났는지, 괜찮으면 \"틀대로 이어짐\")\n학과 적합: 한 줄 (닿는 구절, 억지면 어디가 억지인지)\n맥락: 한 줄 (질문 의도와 문단에서 읽어야 할 맥락을 제대로 잡았는지)\n길이: 추정 초 / 이 질문의 목표 시간(활동 등급과 질문 종류로 정함) / 몇 초 줄이거나 늘릴지와 어디를 덜어낼지\n위험 표현: 블라인드 위반, 생기부에 없는 말, 설명 못 할 용어, 누구나 하는 말, 성적 숫자 (없으면 "없음")\n고칠 곳 1~2개: 어디를 어떻게 (완성 문장 말고 방향과 짧은 구절)\n예상 꼬리질문 1~2개: 답의 빈칸을 향하는 것, 그중 하나는 답의 약한 고리를 반박하는 압박 꼬리 (지어낸 질문이면 표시)\n압박 대응: 본 질문이나 꼬리가 압박 질문이면 인정→근거→보완 순서인지 한 줄 (압박 질문이 없으면 이 줄 생략)\n학생에게 물을 것: 답을 채우려면 필요한 기억이나 사실 하나`;
+  return `${RULES}\n\n${BANK_TXT}\n\n${aCtx(it,qs,q)}\n\n[질문]\n${q.q}\n\n[학생 답변] (공백 뺀 ${n}자, 말하면 약 ${sec}초로 추정)\n${q.a}\n${tails.length?"\n[꼬리질문과 답]\n"+tails.map((t,k)=>`꼬리${k+1}. ${t.q}\n답: ${t.a||"(없음)"}`).join("\n"):""}\n\n[할 일] 이 답변을 면접 답변 기준과 아래 [추가 기준 3개]로 채점해.\n\n[추가 기준 3개]\n- 구조: 질문 종류에 맞는 틀(판단=입장→이유→사례→정리 / 경험=상황·과제→행동→결과→배운 점 / 개념=개념→원리→사례)을 순서대로 따랐는지, 문장끼리 자연스럽게 이어지는지, 한 답에 이야기 줄기가 하나인지. 순서가 뒤섞였거나 같은 말을 되풀이하면 어디인지 짚는다.\n- 학과 적합: 금융·빅데이터학부(통계, 데이터를 모으고 해석함, 금융 판단 기준)에 닿는 관점이나 배운 점이 답에 담겼는지. 학과 이름을 매번 넣으라는 뜻이 아니다. 억지로 이어 붙였으면 그 구절을 짚는다. 학과와 먼 활동이면 실제로 한 일(자료를 찾고 비교·정리함 등) 중 데이터와 닿는 것 하나로 자연스럽게 닿는지 본다. 질문이 학과를 묻지 않았는데 안 닿은 것은 큰 문제로 보지 않는다. 학과 방향이나 확정된 3년 흐름과 어긋나는 말은 반드시 짚는다.\n- 맥락: 질문이 실제로 묻는 것(의도)에 답했는지, 문단 전체의 맥락(그 활동을 왜 했고 무엇을 했고 무엇을 남겼는지)을 바르게 읽었는지, 문단의 다른 활동 내용을 잘못 섞지 않았는지, 확정된 3년 흐름과 맞는지. \n- 질문과 다른 이야기를 했거나 문단 맥락을 잘못 읽었으면 판정은 다시 쓰기다.\n- O·△·X, 상·중·하, 점수 같은 등급 기호를 어디에도 쓰지 않는다. 말로만 쓴다.\n\n출력 형식: 먼저 [결과]만 4줄 이내로 쓰고, 다음 줄에 정확히 ===해설=== 한 줄을 쓴 뒤, 그 아래에 나머지를 순서대로 써.\n[결과] "판정: 바로 연습/한 곳 수정/다시 쓰기" 중 하나 + 한 줄 이유 (바로 연습=흐름과 핵심이 다 있어 소리 내어 연습하면 됨, 한 곳 수정=한 곳만 고치면 됨, 다시 쓰기=첫 문장이 질문에 안 맞거나 흐름이 끊기거나 조심할 말이 있음) 한 줄 + "가장 먼저 고칠 것: ○○" 한 줄\n[해설]\n위 기준들은 속으로만 따져 보고, 기준 이름별로 나눠 쓰지 않는다. 아래만 쓴다.\n문제점: 가장 중요한 것부터 최대 3개. 한 줄에 하나씩 \"- \"로 시작해, 답의 해당 구절을 짧게 따옴표로 인용하고, 왜 문제인지와 어떻게 바꾸면 되는지를 쉬운 말 한 문장으로 쓴다. 고칠 게 없으면 \"- 없음\".\n이어질 질문: 이 답을 들은 면접관이 이어서 물을 질문 1~2개 (지어낸 질문이면 표시)\n맞춤법: 고칠 것만 짧게 나열 (없으면 이 줄 생략)\n\n마지막에 정확히 ===고쳐 쓴 답=== 한 줄을 쓰고, 그 아래에 문제가 있던 문장만 고친 문장으로 쓴다. 답 전체를 다시 쓰지 않는다.\n형식: 고친 문장만 한 줄에 하나씩, 답에 나오는 순서대로, 최대 5줄. 원래 문장, 따옴표, 화살표(→), 번호, 설명은 쓰지 않는다. 문제가 없던 문장은 쓰지 않는다. 맞춤법만 틀린 문장도 고친 문장으로 쓴다.\n고치는 규칙:\n- 학생의 단어와 말투를 살리고 문제 있는 부분만 바꾼다. 학생이 자기 답에서 그 문장을 바로 찾아 바꿔 끼울 수 있어야 한다.\n- 생기부 문단과 학생 답(같은 문단의 다른 답 포함)에 없는 사실은 새로 넣지 않는다. 기억이 필요한 빈칸은 (○○)로 남긴다.\n- 빠진 내용을 넣어야 하면 넣을 문장을 그대로 쓴다.\n- 고칠 게 없으면 \"고칠 문장 없음\" 한 줄만 쓴다.`;
 }
 function aiErrCopy(c){
   return ({not_granted:"Claude 사용을 허락하지 않아서 검사를 쓸 수 없어요.",sampling_disabled:"이 계정에서는 Claude 검사를 쓸 수 없어요.",rate_limited:"요청이 많아요. 잠시 뒤에 다시 눌러 주세요.",session_expired:"다시 로그인해 주세요.",refused:"이 내용은 검사하지 못했어요. 문장을 바꿔 다시 시도해 주세요.",empty_completion:"답이 비어 있어요. 다시 눌러 주세요.",prompt_too_large:"내용이 너무 길어요. 답변을 줄여 주세요.",cancelled:""})[c]??"검사가 중간에 끊겼어요. 다시 눌러 주세요.";
@@ -312,11 +320,13 @@ function recsOf(t){
   if(a<0||b<a)return [];
   try{const arr=JSON.parse(r.slice(a,b+1));return (Array.isArray(arr)?arr:[]).filter(x=>x&&typeof x.q==="string"&&x.q.trim()).slice(0,4).map(x=>({q:x.q.trim(),why:String(x.why||""),src:String(x.src||""),p:x.p===true}))}catch(e){return []}
 }
-function aiSplit(t){t=t||"";const k=t.indexOf(REC_SEP);if(k>=0)t=t.slice(0,k);const i=t.indexOf(AI_SEP);return i<0?[t.trim(),""]:[t.slice(0,i).replace(/\[결과\]\s*/,"").trim(),t.slice(i+AI_SEP.length).replace(/^\s*\[해설\]\s*/,"").trim()]}
+const REW_SEP="===고쳐 쓴 답===";
+function rewOf(t){t=t||"";const i=t.indexOf(REW_SEP);if(i<0)return "";let r=t.slice(i+REW_SEP.length);const k=r.indexOf(REC_SEP);if(k>=0)r=r.slice(0,k);return r.replace(/\*\*/g,"").trim()}
+function aiSplit(t){t=t||"";const w=t.indexOf(REW_SEP);if(w>=0)t=t.slice(0,w);const k=t.indexOf(REC_SEP);if(k>=0)t=t.slice(0,k);const i=t.indexOf(AI_SEP);return i<0?[t.trim(),""]:[t.slice(0,i).replace(/\[결과\]\s*/,"").trim(),t.slice(i+AI_SEP.length).replace(/^\s*\[해설\]\s*/,"").trim()]}
 const VERD={
   q:{"실전형":["good","이 문장 보고 실제로 나올 질문, 핵심 단어를 짚음"],"보완 필요":["mid","나올 순 있지만 핵심을 비껴가거나 두 개를 한 번에 물음"],"빗나감":["bad","문장과 상관없거나 이 문장 질문이 아님"]},
   s:{"충분":["good","핵심 단어를 짚는 질문이 들어 있음"],"질문 부족":["mid","핵심 단어를 짚는 질문이 빠짐"],"다시 짜기":["bad","대부분 문장과 상관없거나 겹침"]},
-  a:{"바로 연습":["good","두괄·구체·성찰이 갖춰짐, 소리 내어 연습하면 됨"],"한 곳 수정":["mid","한 곳만 고치면 됨"],"다시 쓰기":["bad","결론이 앞에 없거나 질문에 안 맞음, 위험 표현 있음"]}
+  a:{"바로 연습":["good","흐름과 핵심이 다 있음, 소리 내어 연습하면 됨"],"한 곳 수정":["mid","한 곳만 고치면 됨"],"다시 쓰기":["bad","첫 문장이 질문에 안 맞거나 흐름이 끊김, 조심할 말 있음"]}
 };
 function verdictTone(v){
   if(/고칠|^하/.test(v))return "bad";
@@ -365,8 +375,10 @@ function fmtResult(r,kind){
 function aiResultHTML(t,streaming,kind){
   const[r,more]=aiSplit(t||"");
   const head=`<div class="fx">${fmtResult(r||"",kind)}</div>`;
-  if(streaming)return head+(t.includes(REC_SEP)?`<p class="hint">질문 추천 고르는 중…</p>`:t.includes(AI_SEP)?`<p class="hint">해설 쓰는 중…</p>`:"");
-  return head+(more?`<details class="ai-more"><summary>더 보기</summary><div class="fx fx-detail">${fmtLines(more)}</div></details>`:"");
+  const rw=rewOf(t);
+  const rwH=rw?`<div class="rew"><p class="ai-label">고친 문장 <span class="rew-n">이 문장들만 바꾸고 나머지는 그대로 둬요</span></p><div class="rew-t">${esc(rw).replace(/\n+/g,"<br>")}</div></div>`:"";
+  if(streaming)return head+(t.includes(REW_SEP)?rwH:"")+(t.includes(REC_SEP)?`<p class="hint">질문 추천 고르는 중…</p>`:t.includes(REW_SEP)?`<p class="hint">고쳐 쓰는 중…</p>`:t.includes(AI_SEP)?`<p class="hint">해설 쓰는 중…</p>`:"");
+  return head+rwH+(more?`<details class="ai-more"><summary>${kind==="a"?"문제점 보기":"더 보기"}</summary><div class="fx fx-detail">${fmtLines(more)}</div></details>`:"");
 }
 function srcOf(kind,id,q){
   if(kind==="s")return qsOf(id).map(x=>x.q).join("\n");
@@ -542,7 +554,7 @@ async function aiRun(kind,oid,oqid){
   const src=srcOf(kind,id,q);
   const key=kind==="s"?"s:"+id:kind+":"+q.id,ctl=new AbortController();
   AI={busy:true,key,kind,text:"",err:"",ctl};
-  render(true);
+  if(oid)render();else render(true);
   try{
     const{text}=await smp(aiPrompt(kind,it,qs,q),{signal:ctl.signal,cache:false,onText:({text})=>{AI.text=text;const el=$("#ai-out");if(el)el.innerHTML=aiResultHTML(text,true,kind)}});
     const rec={t:text,at:Date.now(),src};
@@ -571,6 +583,17 @@ function paraList(){
     cp.ids.push(it.id);
   });
   return out;
+}
+function subsHTML(id,qid,t,lab){
+  const ss=t.subs||[];
+  return `<div class="subs">${ss.map((x,j)=>`<div class="sub">
+      <div class="tail-head"><span class="tn">${lab}-${j+1}</span>
+        <input class="field tail-q autosave" id="tsq-${x.id}" value="${esc(x.q)}" data-id="${id}" data-qid="${qid}" data-tid="${t.id}" data-sid="${x.id}" data-field="q" aria-label="꼬리의 꼬리질문" autocomplete="off">
+        <button type="button" class="link danger" data-act="ts-del" data-id="${id}" data-qid="${qid}" data-tid="${t.id}" data-v="${x.id}">${S.confirm==="ts:"+x.id?"정말 삭제?":"삭제"}</button></div>
+      <textarea class="field tail-a autosave" id="tsa-${x.id}" data-id="${id}" data-qid="${qid}" data-tid="${t.id}" data-sid="${x.id}" data-field="a" placeholder="꼬리의 꼬리 답변" aria-label="꼬리의 꼬리 답변">${esc(x.a||"")}</textarea>
+    </div>`).join("")}
+    <form class="addq sub-add" data-act="add-ts" data-id="${id}" data-qid="${qid}" data-tid="${t.id}"><input class="field" id="tsadd-${t.id}" placeholder="이 꼬리에 이어질 질문 직접 쓰기" autocomplete="off" aria-label="꼬리의 꼬리질문 추가"><button class="primary sm">추가</button></form>
+  </div>`;
 }
 function paraOf(id){return paraList().find(x=>x.ids.includes(id))||null}
 function mainOf(pr){const m=(items.get(pr.key)||{}).mainQ;return m&&pr.ids.some(id=>qsOf(id).some(q=>q.id===m))?m:null}
@@ -625,7 +648,8 @@ function vPara(c){
     return `<section class="pblock"><p class="pb-head"><span class="pnum">${i+1}</span>${esc(it.sentence)}</p>${qs.map(q=>{qn++;const tl=(q.tails||[]);return `<div class="pq">
       <p class="pq-q"><span class="pq-n">Q${qn}</span>${esc(q.q)}${q.done?` <span class="pq-done">준비 완료</span>`:""}</p>
       <textarea class="field ans autosave" id="pa-${q.id}" data-id="${id}" data-qid="${q.id}" data-field="a" aria-label="Q${qn} 답변" placeholder="이 질문이 본질문으로 온다고 보고: 질문에 대한 답 → 의도·이유 → 핵심 근거 하나 → 배운 점">${esc(q.a||"")}</textarea>
-      ${tl.length?`<div class="ptails">${tl.map((t,k)=>`<div class="ptail"><p class="ptail-q"><span class="pq-role tail">꼬리 ${k+1}</span> ${esc(t.q)}</p><textarea class="field tail-a autosave" id="pta-${t.id}" data-id="${id}" data-qid="${q.id}" data-tid="${t.id}" data-field="a" aria-label="Q${qn} 꼬리 ${k+1} 답변" placeholder="묻는 것만, 본답보다 짧게">${esc(t.a||"")}</textarea></div>`).join("")}</div>`:""}
+      ${tl.length?`<div class="ptails">${tl.map((t,k)=>`<div class="ptail"><p class="ptail-q"><span class="pq-role tail">꼬리 ${k+1}</span> ${esc(t.q)}</p><textarea class="field tail-a autosave" id="pta-${t.id}" data-id="${id}" data-qid="${q.id}" data-tid="${t.id}" data-field="a" aria-label="Q${qn} 꼬리 ${k+1} 답변" placeholder="묻는 것만, 본답보다 짧게">${esc(t.a||"")}</textarea>${subsHTML(id,q.id,t,"꼬리 "+(k+1))}</div>`).join("")}</div>`:""}
+      <form class="addq" data-act="add-t2" data-id="${id}" data-qid="${q.id}"><input class="field" id="t2add-${q.id}" placeholder="꼬리질문 직접 추가" autocomplete="off" aria-label="꼬리질문 직접 추가"><button class="primary sm">추가</button></form>
       ${paBox(id,q)}
     </div>`}).join("")}</section>`;
   }).join("");
@@ -736,7 +760,8 @@ function flushAns(key){
   clearTimeout(p.t);ansTimers.delete(key);
   updateQuestions(p.id,qs=>{
     const q=qs.find(x=>x.id===p.qid);if(!q)return;
-    if(p.tid){const t=(q.tails||[]).find(x=>x.id===p.tid);if(t)t[p.field]=p.val}
+    if(p.sid){const t=(q.tails||[]).find(x=>x.id===p.tid),u=t&&(t.subs||[]).find(x=>x.id===p.sid);if(u)u[p.field]=p.val}
+    else if(p.tid){const t=(q.tails||[]).find(x=>x.id===p.tid);if(t)t[p.field]=p.val}
     else q[p.field]=p.val;
   });
 }
@@ -776,6 +801,8 @@ const VIEWS={home:vHome,add:vAdd,browse:vBrowse,sentence:vSentence,question:vQue
 // 입력칸에 커서가 있을 때는 그 칸을 건드리지 않고, 목록 같은 표시 영역(data-region)만 바로 바꾼다.
 function patchRegions(){
   const box=$("#screen"),c=cur(),fn=VIEWS[c.s];
+  const ae=c.s==="para"?anchorEl():null,aTop=ae?ae.getBoundingClientRect().top:null;
+  try{
   if(!fn||!box.querySelector("[data-region]"))return;
   const html=fn(c);if(html==null)return;
   const tmp=document.createElement("div");tmp.innerHTML=html;
@@ -783,8 +810,18 @@ function patchRegions(){
     const live=box.querySelector(`[data-region="${n.dataset.region}"]`);
     if(live&&!live.contains(document.activeElement))live.innerHTML=n.innerHTML;
   });
+  }finally{if(aTop!=null){const n=anchorEl();if(n){const d=n.getBoundingClientRect().top-aTop;if(Math.abs(d)>1)window.scrollBy(0,d)}}}
 }
+let ptrDown=false,ptrPending=false;
+document.addEventListener("pointerdown",()=>{ptrDown=true},true);
+const ptrEnd=()=>{if(!ptrDown)return;setTimeout(()=>{ptrDown=false;if(ptrPending){ptrPending=false;render()}},0)};
+document.addEventListener("pointerup",ptrEnd,true);document.addEventListener("pointercancel",ptrEnd,true);
+let anchorQid=null;
+document.addEventListener("pointerdown",e=>{const t=e.target&&e.target.closest&&e.target.closest("[data-qid]");if(t&&cur().s==="para")anchorQid=t.dataset.qid},true);
+document.addEventListener("focusin",e=>{const t=e.target;if(t&&t.dataset&&t.dataset.qid&&cur().s==="para")anchorQid=t.dataset.qid});
+function anchorEl(){return anchorQid?document.getElementById("pa-"+anchorQid):null}
 function render(force){
+  if(!force&&ptrDown){ptrPending=true;return}
   if(!force&&textFocused()){pending=true;if(!composing)patchRegions();return}
   pending=false;
   const c=cur(),prev=nav[nav.length-2];
@@ -794,8 +831,11 @@ function render(force){
   const html=fn(c);if(html==null)return;
   document.body.dataset.s=c.s;
   const pqs=(document.getElementById("pquote")||{}).scrollTop||0;
+  const ae=force!==true&&c.s==="para"?anchorEl():null,aTop=ae?ae.getBoundingClientRect().top:null;
+  {const sc=$("#screen");if(force===true||c.s!=="para")sc.style.minHeight="";else sc.style.minHeight=Math.max(parseFloat(sc.style.minHeight)||0,sc.offsetHeight)+"px"}
   $("#screen").innerHTML=(banner?`<div class="banner">${esc(banner)}</div>`:"")+html;
   if(pqs&&force!==true){const n=document.getElementById("pquote");if(n)n.scrollTop=pqs}
+  if(aTop!=null){const n=anchorEl();if(n){const d=n.getBoundingClientRect().top-aTop;if(Math.abs(d)>1)window.scrollBy(0,d)}}
   if(force===true){window.scrollTo(0,0);$("#screen").style.animation="none";void $("#screen").offsetWidth;$("#screen").style.animation=""}
 }
 function focusLater(sel){requestAnimationFrame(()=>{const el=$(sel);if(el){el.focus();try{const n=el.value.length;el.setSelectionRange(n,n)}catch(e){}}})}
@@ -918,6 +958,7 @@ function vQuestion(c){
           <input class="field tail-q autosave" id="tq-${t.id}" value="${esc(t.q)}" data-id="${c.id}" data-qid="${q.id}" data-tid="${t.id}" data-field="q" aria-label="꼬리질문 ${k+1}" autocomplete="off">
           <button type="button" class="link danger" data-act="t-del" data-v="${t.id}">${S.confirm==="t:"+t.id?"정말 삭제?":"삭제"}</button></div>
         <textarea class="field tail-a autosave" id="ta-${t.id}" data-id="${c.id}" data-qid="${q.id}" data-tid="${t.id}" data-field="a" placeholder="꼬리질문 답변" aria-label="꼬리질문 ${k+1} 답변">${esc(t.a||"")}</textarea>
+        ${subsHTML(c.id,q.id,t,"꼬리 "+(k+1))}
       </div>`).join("")}
       </div>
       <form class="addq" data-act="add-t"><input class="field" id="t-add" value="${esc(S.tdrafts[q.id]||"")}" placeholder="꼬리질문 입력" autocomplete="off" aria-label="새 꼬리질문"><button class="primary sm">추가</button></form>
@@ -1124,6 +1165,10 @@ document.addEventListener("click",e=>{
       if(S.confirm==="q"){const id=c.id,qid=c.qid;ansTimers.delete(qid+":a");updateQuestions(id,qs=>{const i=qs.findIndex(q=>q.id===qid);if(i>=0)qs.splice(i,1)});back()}
       else{S.confirm="q";clearTimeout(confirmTimer);confirmTimer=setTimeout(()=>{S.confirm=null;render()},3500);render(1)}
       break;
+    case "ts-del":{const d=b.dataset;
+      if(S.confirm==="ts:"+v){S.confirm=null;ansTimers.delete(v+":a");ansTimers.delete(v+":q");updateQuestions(d.id,qs=>{const q=qs.find(x=>x.id===d.qid),t=q&&(q.tails||[]).find(x=>x.id===d.tid);if(t&&t.subs)t.subs=t.subs.filter(x=>x.id!==v)})}
+      else{S.confirm="ts:"+v;clearTimeout(confirmTimer);confirmTimer=setTimeout(()=>{S.confirm=null;render()},3500);render()}
+      break}
     case "t-del":
       if(S.confirm==="t:"+v){S.confirm=null;ansTimers.delete(v+":a");ansTimers.delete(v+":q");updateQuestions(c.id,qs=>{const q=qs.find(x=>x.id===c.qid);if(q&&q.tails)q.tails=q.tails.filter(t=>t.id!==v)})}
       else{S.confirm="t:"+v;clearTimeout(confirmTimer);confirmTimer=setTimeout(()=>{S.confirm=null;render(1)},3500);render(1)}
@@ -1134,6 +1179,7 @@ document.addEventListener("click",e=>{
     case "pl-area":PL.area=v;render(1);break;
     case "pl-all":PL.all=v==="1";render(1);break;
     case "hl-undo":hlUndo();break;
+    case "rew-copy":{const t=b.closest(".rew")?.querySelector(".rew-t");if(t){const txt=t.innerText;try{navigator.clipboard.writeText(txt).then(()=>{b.textContent="✓ 복사됨"},()=>{b.textContent="복사 안 됨"})}catch(e){b.textContent="복사 안 됨"}}break}
     case "pq-main":{const k=b.dataset.id,it=items.get(k);if(!it)break;flushAll();const nv=it.mainQ===v?null:v;it.mainQ=nv;writeItem(k,{mainQ:nv});render();break}
     case "pq-min":{PQ.min=!PQ.min;const bx=document.getElementById("pmemo");if(bx)bx.classList.toggle("min",PQ.min);b.textContent=PQ.min?"펼치기":"접기";break}
     case "sug-run":sugRun(b.dataset.id,b.dataset.qid);break;
@@ -1165,10 +1211,10 @@ document.addEventListener("input",e=>{
   else if(t.id==="s-addq")S.drafts[cur().id]=t.value;
   else if(t.id==="t-add")S.tdrafts[cur().qid]=t.value;
   else if(t.classList.contains("autosave")){
-    const d=t.dataset,key=(d.tid||d.qid)+":"+d.field,prev=ansTimers.get(key);if(prev)clearTimeout(prev.t);
+    const d=t.dataset,key=(d.sid||d.tid||d.qid)+":"+d.field,prev=ansTimers.get(key);if(prev)clearTimeout(prev.t);
     if(!(d.field==="q"&&!t.value.trim())){
       setSync("입력 중…","busy");
-      ansTimers.set(key,{id:d.id,qid:d.qid,tid:d.tid||null,field:d.field,val:t.value,t:setTimeout(()=>flushAns(key),900)});
+      ansTimers.set(key,{id:d.id,qid:d.qid,tid:d.tid||null,sid:d.sid||null,field:d.field,val:t.value,t:setTimeout(()=>flushAns(key),900)});
     }
   }
   if(!e.isComposing)kCheck(t);
@@ -1184,6 +1230,12 @@ document.addEventListener("submit",e=>{
     const v=(S.drafts[cur().id]||"").trim();if(!v)return;delete S.drafts[cur().id];$("#s-addq").value="";
     const w=updateQuestions(cur().id,qs=>qs.push({id:uid(),q:v,a:"",done:false}));
     keepFocus("#s-addq",w);
+  }else if(e.target.dataset.act==="add-ts"||e.target.dataset.act==="add-t2"){
+    const f=e.target,d=f.dataset,inp=f.querySelector("input"),v=(inp&&inp.value||"").trim();if(!v)return;inp.value="";
+    const w=updateQuestions(d.id,qs=>{const q=qs.find(x=>x.id===d.qid);if(!q)return;
+      if(d.act==="add-t2")(q.tails=q.tails||[]).push({id:uid(),q:v,a:""});
+      else{const t=(q.tails||[]).find(x=>x.id===d.tid);if(t)(t.subs=t.subs||[]).push({id:uid(),q:v,a:""})}});
+    keepFocus("#"+inp.id,w);
   }else if(e.target.dataset.act==="add-t"){
     const c=cur(),v=(S.tdrafts[c.qid]||"").trim();if(!v)return;delete S.tdrafts[c.qid];$("#t-add").value="";
     const w=updateQuestions(c.id,qs=>{const q=qs.find(x=>x.id===c.qid);if(q)(q.tails=q.tails||[]).push({id:uid(),q:v,a:""})});
@@ -1192,7 +1244,7 @@ document.addEventListener("submit",e=>{
 });
 document.addEventListener("focusout",e=>{
   const d=e.target.dataset||{};
-  if(e.target.classList&&e.target.classList.contains("autosave"))flushAns((d.tid||d.qid)+":"+d.field);
+  if(e.target.classList&&e.target.classList.contains("autosave"))flushAns((d.sid||d.tid||d.qid)+":"+d.field);
   setTimeout(()=>{if(!$("#screen").contains(document.activeElement))kHide()},0);
   setTimeout(()=>{if(pending&&!textFocused())render()},0);
 });
